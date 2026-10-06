@@ -1,0 +1,335 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ---- SIGNAL DESK palette (HSL channels) ---- */
+    --graphite: 210 11% 4%;          /* #08090A deep graphite black */
+    --bone: 43 23% 93%;              /* #F2EFE8 warm bone white */
+    --signal-amber: 41 89% 61%;      /* #F4B942 signal amber */
+    --cool-blue: 214 100% 74%;       /* #7CB8FF cool blue */
+    --warm-coral: 9 59% 62%;         /* #D87562 warm coral */
+
+    /* Legacy aliases kept so existing utilities keep working */
+    --ink: var(--graphite);
+    --paper: var(--bone);
+    --signal: var(--signal-amber);
+    --mid: 43 12% 62%;
+
+    /* Per-project accent, overridden inline; defaults to amber */
+    --accent-project: #F4B942;
+
+    /* Theme-driven semantic tokens (set on body via data-theme) */
+    --background: var(--bone);
+    --foreground: var(--graphite);
+    --divider: var(--graphite) / 0.18;
+
+    /* shadcn compatibility tokens */
+    --card: var(--bone);
+    --card-foreground: var(--graphite);
+    --popover: var(--bone);
+    --popover-foreground: var(--graphite);
+    --primary: var(--graphite);
+    --primary-foreground: var(--bone);
+    --secondary: 43 10% 88%;
+    --secondary-foreground: var(--graphite);
+    --muted: 43 10% 88%;
+    --muted-foreground: var(--mid);
+    --accent: var(--signal-amber);
+    --accent-foreground: var(--graphite);
+    --destructive: 9 70% 58%;
+    --destructive-foreground: var(--bone);
+    --border: 210 11% 4%;
+    --input: 210 11% 4%;
+    --ring: var(--graphite);
+    --radius: 0rem;
+  }
+
+  /* Dark editorial context (graphite background) */
+  [data-theme="dark"] {
+    --background: var(--graphite);
+    --foreground: var(--bone);
+    --card: var(--graphite);
+    --card-foreground: var(--bone);
+    --popover: var(--graphite);
+    --popover-foreground: var(--bone);
+    --primary: var(--bone);
+    --primary-foreground: var(--graphite);
+    --secondary: 210 8% 12%;
+    --secondary-foreground: var(--bone);
+    --muted: 210 8% 12%;
+    --muted-foreground: 43 10% 62%;
+    --border: 43 23% 93%;
+    --input: 43 23% 93%;
+    --ring: var(--bone);
+    --divider: var(--bone) / 0.18;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--foreground) / 0.18);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "ss01";
+    transition: background-color 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+      color 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: hsl(var(--signal-amber));
+    color: hsl(var(--graphite));
+  }
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+@layer components {
+  /* ---- Typographic scale ---- */
+  .text-giant {
+    font-family: "Archivo", sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.84;
+    font-size: clamp(3.5rem, 16vw, 5.5rem);
+  }
+
+  @media (min-width: 768px) {
+    .text-giant {
+      font-size: clamp(5rem, 12vw, 15rem);
+    }
+  }
+
+  .text-display {
+    font-family: "Archivo", sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    font-size: clamp(2.5rem, 7vw, 7rem);
+  }
+
+  .text-h1 {
+    font-family: "Archivo", sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+    font-size: clamp(3rem, 5vw, 5rem);
+  }
+
+  .text-h2 {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+  }
+
+  /* Mono system for numbers, labels, meta */
+  .mono {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-feature-settings: "tnum";
+  }
+
+  .label {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: clamp(0.66rem, 0.82vw, 0.78rem);
+  }
+
+  .body-lg {
+    font-weight: 400;
+    line-height: 1.45;
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+  }
+
+  .divider-line {
+    height: 1px;
+    background: hsl(var(--foreground) / 0.18);
+    width: 100%;
+  }
+
+  /* Ghost / outlined title layer */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(242, 239, 232, 0.18);
+    text-stroke: 1px rgba(242, 239, 232, 0.18);
+  }
+
+  /* Home-stage project title — centred focal point, crosses the seam.
+     Capped so it never collides with the fixed nav / status bar or overflow. */
+  .home-project-title {
+    font-family: "Archivo", sans-serif;
+    font-weight: 900;
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+    text-align: center;
+    font-size: clamp(3.5rem, min(11.5vw, 17vh), 12rem);
+    max-width: 92vw;
+  }
+  .home-project-title.is-small {
+    font-size: clamp(3rem, min(9.5vw, 15vh), 10rem);
+  }
+
+  /* Mobile stage title */
+  .home-project-title-m {
+    font-family: "Archivo", sans-serif;
+    font-weight: 900;
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    font-size: clamp(3rem, 15vw, 5.5rem);
+  }
+
+  /* ---- Home centre copy box: internal safe area + rhythm ---- */
+  .home-copy-frame {
+    width: min(82vw, 1500px);
+    max-width: calc(100vw - 120px);
+    box-sizing: border-box;
+    padding: clamp(48px, 6vh, 80px) clamp(72px, 7vw, 140px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .home-copy-inner {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0;
+  }
+  .home-copy-meta {
+    margin-bottom: 28px;
+  }
+  .home-copy-title-wrap {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto 36px;
+  }
+  .home-copy-title {
+    display: block;
+    font-family: "Archivo", sans-serif;
+    font-weight: 900;
+    font-size: clamp(76px, 9vw, 164px);
+    line-height: 0.84;
+    letter-spacing: -0.055em;
+    text-align: center;
+    text-wrap: balance;
+  }
+  .home-copy-title.is-small {
+    font-size: clamp(64px, 8vw, 140px);
+  }
+  .home-copy-desc {
+    width: min(100%, 780px);
+    margin: 0 auto 28px;
+    font-size: clamp(16px, 1.15vw, 22px);
+    line-height: 1.5;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    display: block;
+  }
+  .home-copy-cta {
+    position: relative;
+    margin: 0 auto;
+    min-height: 44px;
+  }
+
+  @media (max-width: 1280px) {
+    .home-copy-frame {
+      width: calc(100vw - 64px);
+      max-width: calc(100vw - 64px);
+      padding: 48px 48px;
+    }
+  }
+  @media (max-width: 768px) {
+    .home-copy-frame {
+      width: calc(100vw - 32px);
+      max-width: calc(100vw - 32px);
+      padding: 40px 24px;
+    }
+    .home-copy-title {
+      font-size: clamp(54px, 16vw, 96px);
+    }
+    .home-copy-desc {
+      font-size: 16px;
+    }
+  }
+}
+
+@layer utilities {
+  .edge-x {
+    padding-left: clamp(1rem, 2vw, 1.5rem);
+    padding-right: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .blend-diff {
+    mix-blend-mode: difference;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Film grain overlay (decorative) */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .signal-dot {
+    animation: signal-pulse 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes signal-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.82); }
+}
+
+/* Hide native cursor on desktop when custom cursor is active */
+.custom-cursor-active,
+.custom-cursor-active a,
+.custom-cursor-active button {
+  cursor: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .signal-dot {
+    animation: none !important;
+  }
+}

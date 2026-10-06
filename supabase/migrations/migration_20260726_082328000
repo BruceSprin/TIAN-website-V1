@@ -1,0 +1,38 @@
+-- Contact project enquiries
+create table if not exists public.contact_submissions (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  company text not null,
+  website text,
+  project_type text not null,
+  budget text not null,
+  message text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.contact_submissions enable row level security;
+
+-- Anyone (anonymous visitors) may submit an enquiry, but no one can read them
+-- from the client. Reading is done server-side / by the studio only.
+create policy "anyone can submit contact enquiry"
+  on public.contact_submissions
+  for insert
+  to anon, authenticated
+  with check (true);
+
+-- Newsletter subscribers
+create table if not exists public.subscribers (
+  id uuid primary key default gen_random_uuid(),
+  name text,
+  email text not null unique,
+  created_at timestamptz not null default now()
+);
+
+alter table public.subscribers enable row level security;
+
+create policy "anyone can subscribe"
+  on public.subscribers
+  for insert
+  to anon, authenticated
+  with check (true);

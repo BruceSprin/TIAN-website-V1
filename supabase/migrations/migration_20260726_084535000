@@ -1,0 +1,2 @@
+delete from public.contact_submissions where email = 'test@example.com';
+delete from public.subscribers where email in ('sub@example.com','spam@example.com');
